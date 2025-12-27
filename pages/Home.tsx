@@ -167,4 +167,23 @@ const Home: React.FC = () => {
       {/* CTA Footer */}
       <section className="py-40 text-center px-6">
         <div className="max-w-3xl mx-auto glass p-16 rounded-3xl neon-border relative overflow-hidden">
-          <div className="absolute -top-20 -left-20 w
+          <div className="absolute -top-20 -left-20 w-40 h-40 bg-[#39FF14]/10 rounded-full blur-[80px]" />
+          <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-[#39FF14]/10 rounded-full blur-[80px]" />
+          
+          <h2 className="text-4xl md:text-6xl font-bold mb-8 relative z-10">READY TO DOMINATE?</h2>
+          <p className="text-gray-400 text-lg mb-12 relative z-10">Registration closes when the countdown hits zero. Don't miss your chance.</p>
+          <a 
+            href="https://forms.gle/UWnLvPZRE4Q2kKS96" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-block px-12 py-5 bg-[#39FF14] text-black font-black uppercase tracking-widest text-sm rounded-sm hover:shadow-[0_0_30px_rgba(57,255,20,0.4)] transition-all relative z-10"
+          >
+            CLAIM YOUR SPOT
+          </a>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default Home;

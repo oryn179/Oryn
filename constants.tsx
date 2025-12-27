@@ -5,6 +5,9 @@ export const COLORS = {
   NEON_GREEN: '#39FF14',
   DARK_BG: '#050505',
   GLASS_BG: 'rgba(255, 255, 255, 0.03)',
+  DIAMOND: '#B9F2FF',
+  SILVER: '#C0C0C0',
+  BRONZE: '#CD7F32'
 };
 
 export const NAVIGATION = [
@@ -22,21 +25,27 @@ export const GIFT_PACKAGES = [
 
 export const PRIZES = [
   { 
-    rank: "1st Place", 
-    amount: "$500", 
-    desc: "Full license of AE + Premium Assets", 
-    image: "https://picsum.photos/400/300?random=1" 
+    rank: "Grand Champion", 
+    tier: "Diamond",
+    amount: "1st Place", 
+    desc: "25 Telegram Stars • AE/AM Premium Assets • 75+ High-Quality Pfps • Oryn Premium Editing Pack", 
+    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800",
+    color: COLORS.NEON_GREEN
   },
   { 
-    rank: "2nd Place", 
-    amount: "$250", 
-    desc: "Premium Plugins + Asset Bundle", 
-    image: "https://picsum.photos/400/300?random=2" 
+    rank: "Elite Performer", 
+    tier: "Silver",
+    amount: "2nd Place", 
+    desc: "10 Telegram Stars • Advanced Plugin Bundle • 30+ Curated Pfps", 
+    image: "https://images.unsplash.com/photo-1635776062127-d379bfcba9f8?auto=format&fit=crop&q=80&w=800",
+    color: "#C0C0C0"
   },
   { 
-    rank: "3rd Place", 
-    amount: "$100", 
-    desc: "Oryn Creator Asset Pack", 
-    image: "https://picsum.photos/400/300?random=3" 
+    rank: "Rising Talent", 
+    tier: "Bronze",
+    amount: "3rd Place", 
+    desc: "5 Telegram Stars • Starter Asset Pack • Exclusive Role", 
+    image: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&q=80&w=800",
+    color: "#CD7F32"
   },
 ];

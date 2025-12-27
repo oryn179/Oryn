@@ -2,10 +2,9 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: './', // Crucial for Cloudflare Pages to find assets relatively
+  base: './', // Ensures assets are loaded relatively (fixes blank screen on static hosts)
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
@@ -14,13 +13,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom'],
+          vendor: ['react', 'react-dom', 'react-router-dom', 'lucide-react'],
         },
       },
     },
-  },
-  server: {
-    port: 3000,
-    strictPort: true,
   },
 });

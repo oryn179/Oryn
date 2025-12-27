@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from 'react';
 
 const CountdownTimer: React.FC = () => {
-  // Set target date to exactly 4 days from now
-  const [targetDate] = useState(new Date(Date.now() + 4 * 24 * 60 * 60 * 1000));
+  const [targetDate, setTargetDate] = useState<number | null>(null);
   const [timeLeft, setTimeLeft] = useState({
     days: 4,
     hours: 0,
@@ -12,8 +11,21 @@ const CountdownTimer: React.FC = () => {
   });
 
   useEffect(() => {
+    // Check if target date exists in storage, else create it (4 days from now)
+    const storedTarget = localStorage.getItem('tournament_deadline');
+    let finalTarget: number;
+    
+    if (storedTarget) {
+      finalTarget = parseInt(storedTarget, 10);
+    } else {
+      finalTarget = Date.now() + 4 * 24 * 60 * 60 * 1000;
+      localStorage.setItem('tournament_deadline', finalTarget.toString());
+    }
+    
+    setTargetDate(finalTarget);
+
     const calculateTimeLeft = () => {
-      const difference = +targetDate - +new Date();
+      const difference = finalTarget - Date.now();
       
       if (difference > 0) {
         setTimeLeft({
@@ -22,14 +34,16 @@ const CountdownTimer: React.FC = () => {
           minutes: Math.floor((difference / 1000 / 60) % 60),
           seconds: Math.floor((difference / 1000) % 60)
         });
+      } else {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
       }
     };
 
     const timer = setInterval(calculateTimeLeft, 1000);
-    calculateTimeLeft(); // Run once immediately
+    calculateTimeLeft();
 
     return () => clearInterval(timer);
-  }, [targetDate]);
+  }, []);
 
   const TimeUnit = ({ label, value }: { label: string; value: number }) => (
     <div className="flex flex-col items-center">

@@ -2,12 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Editor } from '../types';
-// Added Shield to imports
-import { CheckCircle, Lock, Play, Mail, Loader2, Info, Shield } from 'lucide-react';
+import { CheckCircle, Lock, Play, Github, Info, Shield, Loader2 } from 'lucide-react';
 
 const Vote: React.FC = () => {
-  const { user, login, isLoading } = useAuth();
-  const [email, setEmail] = useState('');
+  const { user, loginWithGithub, isLoading: authLoading } = useAuth();
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const [editors, setEditors] = useState<Editor[]>([
     { id: '1', name: 'Zade Effects', thumbnail: 'https://picsum.photos/600/400?random=10', videoUrl: '#', votes: 1242, author: '@zade' },
     { id: '2', name: 'Neon Samurai', thumbnail: 'https://picsum.photos/600/400?random=11', videoUrl: '#', votes: 942, author: '@samurai' },
@@ -15,7 +14,6 @@ const Vote: React.FC = () => {
     { id: '4', name: 'After Visuals', thumbnail: 'https://picsum.photos/600/400?random=13', videoUrl: '#', votes: 856, author: '@visuals' },
   ]);
   const [votedId, setVotedId] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (user?.votedFor) {
@@ -23,27 +21,31 @@ const Vote: React.FC = () => {
     }
   }, [user]);
 
+  const handleGithubLogin = () => {
+    setIsRedirecting(true);
+    loginWithGithub();
+  };
+
   const handleVote = (id: string) => {
     if (votedId) return;
     setVotedId(id);
-    // Simulate API call to save vote
     setEditors(prev => prev.map(e => e.id === id ? { ...e, votes: e.votes + 1 } : e));
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setIsSubmitting(true);
-    await login(email);
-    setIsSubmitting(false);
-  };
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin text-[#39FF14]" size={48} />
+      </div>
+    );
+  }
 
   return (
     <div className="pt-28 pb-20 px-6 max-w-7xl mx-auto">
       <header className="mb-16 text-center">
-        <h1 className="text-4xl md:text-6xl font-bold mb-4 tracking-tighter">SECURE <span className="text-[#39FF14]">VOTING</span></h1>
+        <h1 className="text-4xl md:text-6xl font-bold mb-4 tracking-tighter uppercase">Tournament <span className="text-[#39FF14]">Access</span></h1>
         <p className="text-gray-400 max-w-2xl mx-auto">
-          One person, one vote. Our system uses Magic Link technology to verify your identity and ensure a fair outcome for all editors.
+          Authorized access required. Sign in with your GitHub account to verify your identity and cast your vote.
         </p>
       </header>
 
@@ -52,35 +54,32 @@ const Vote: React.FC = () => {
           <div className="flex justify-center mb-8 text-[#39FF14]">
             <Lock size={48} />
           </div>
-          <h2 className="text-2xl font-bold text-center mb-6">Authentication Required</h2>
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div>
-              <label className="block text-xs uppercase tracking-widest text-gray-500 font-bold mb-2">Email Address</label>
-              <div className="relative">
-                <input 
-                  type="email" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="editor@oryn.com"
-                  className="w-full bg-white/5 border border-white/10 rounded-sm py-4 px-12 focus:border-[#39FF14] transition-colors outline-none"
-                  required
-                />
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+          <h2 className="text-2xl font-bold text-center mb-2">Secure Authentication</h2>
+          <p className="text-center text-gray-500 mb-8 text-sm">
+            Please authorize with GitHub to continue.
+          </p>
+          
+          <div className="space-y-4">
+            <button 
+              onClick={handleGithubLogin}
+              disabled={isRedirecting}
+              className="w-full flex items-center justify-center space-x-3 py-4 bg-white text-black rounded-sm font-black uppercase tracking-widest text-xs hover:bg-[#39FF14] transition-all disabled:opacity-50"
+            >
+              {isRedirecting ? <Loader2 className="animate-spin" size={18} /> : <Github size={18} />}
+              <span>{isRedirecting ? 'Connecting...' : 'Continue with GitHub'}</span>
+            </button>
+          </div>
+
+          <div className="mt-8 p-4 bg-white/5 rounded-lg border border-white/10">
+            <div className="flex items-start space-x-3">
+              <Info className="text-[#39FF14] shrink-0" size={16} />
+              <div>
+                <p className="text-[10px] text-gray-400 font-bold uppercase mb-1">Privacy Guarantee</p>
+                <p className="text-[10px] text-gray-500 leading-normal">
+                  We use GitHub to prevent bot voting. We only access your public profile and email address. No data is shared with third parties.
+                </p>
               </div>
             </div>
-            <button 
-              type="submit" 
-              disabled={isSubmitting}
-              className="w-full py-4 bg-[#39FF14] text-black font-black uppercase tracking-widest text-sm rounded-sm hover:shadow-[0_0_20px_rgba(57,255,20,0.3)] flex items-center justify-center space-x-2 disabled:opacity-50 transition-all"
-            >
-              {isSubmitting ? <Loader2 className="animate-spin" /> : <span>Send Magic Link</span>}
-            </button>
-          </form>
-          <div className="mt-8 flex items-start space-x-3 p-4 bg-white/5 rounded-lg border border-white/5">
-            <Info className="text-[#39FF14] shrink-0" size={16} />
-            <p className="text-[10px] text-gray-500 leading-normal">
-              By logging in, you agree to our fair-play terms. We store your email securely and only use it for tournament verification.
-            </p>
           </div>
         </div>
       ) : (
@@ -90,7 +89,10 @@ const Vote: React.FC = () => {
             <div className="flex items-center space-x-4 mb-4 md:mb-0">
               <img src={user.picture} className="w-12 h-12 rounded-full border border-[#39FF14]" alt="User" />
               <div>
-                <p className="font-bold text-lg">{user.name}</p>
+                <div className="flex items-center space-x-2">
+                  <p className="font-bold text-lg">{user.name}</p>
+                  {user.role === 'ADMIN' && <span className="bg-[#39FF14] text-black text-[8px] font-black px-1.5 py-0.5 rounded">ADMIN</span>}
+                </div>
                 <p className="text-xs text-gray-500">{user.email}</p>
               </div>
             </div>
@@ -157,14 +159,14 @@ const Vote: React.FC = () => {
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-400 text-sm leading-relaxed">
           <ul className="space-y-4 list-disc list-inside">
-            <li>You must log in via your own email to participate.</li>
+            <li>Authenticated GitHub account required to participate.</li>
             <li>Each verified user is permitted only ONE vote per season.</li>
-            <li>Once cast, votes are permanently locked and cannot be changed.</li>
+            <li>System automatically detects and blocks multi-account abuse.</li>
           </ul>
           <ul className="space-y-4 list-disc list-inside">
-            <li>Suspected bot accounts or mass-voting schemes will be disqualified.</li>
-            <li>IP monitoring is enabled to prevent duplicate account abuse.</li>
-            <li>The top 3 winners will undergo a full audit of their vote source.</li>
+            <li>Votes are cryptographically linked to your unique GitHub ID.</li>
+            <li>VPN and Proxy monitoring is enabled to prevent fraudulent activity.</li>
+            <li>The top 3 winners will undergo a manual audit of vote origins.</li>
           </ul>
         </div>
       </section>
